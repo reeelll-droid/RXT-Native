@@ -1,3 +1,4 @@
+
 name: Build RXT Native APK
 
 on:
@@ -33,18 +34,16 @@ jobs:
       - name: Extract source
         run: unzip -o RXT-Native-source.zip -d .
 
-      - name: Fix minimum SDK
+      - name: Fix SDK and Kotlin target
         run: |
           sed -i 's/minSdk = 23/minSdk = 24/g' RXT-Native/app/build.gradle.kts
           sed -i 's/minSdkVersion 23/minSdkVersion 24/g' RXT-Native/app/build.gradle.kts
-
-      - name: Fix Java target
-        run: |
           cat >> RXT-Native/app/build.gradle.kts <<'EOF'
 
-          tasks.withType<org.gradle.api.tasks.compile.JavaCompile>().configureEach {
-              sourceCompatibility = "17"
-              targetCompatibility = "17"
+          tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+              kotlinOptions {
+                  jvmTarget = "1.8"
+              }
           }
           EOF
 
